@@ -20,7 +20,7 @@ return [
     |
     */
 
-    'session_key_name'     => 'samcro',
+    'session_key_name'     => 'accesstory_store',
     //'session_key_name'     => 'Samcrosoft_AccessStory',
 
     /*
@@ -35,4 +35,20 @@ return [
     */
 
     'include_laravel_boot' => TRUE,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Name of Custom Method in The BaseController [/Controller Class]
+    |--------------------------------------------------------------------------
+    |
+    | The flexibility of the accessstory package is that you can extend it
+    | You can extend the columns in the table by editing the migration after publishing it to your codebase
+    |
+    | This value represents the name of the method to be added to the [Controller] class or majorly its extended classes
+    | BaseController ->
+    | This method should return an array of values to be added to the accesstory table
+    |
+    */
+    'custom_controller_method_name' => 'accessHistoryExtraData'
+
 ];

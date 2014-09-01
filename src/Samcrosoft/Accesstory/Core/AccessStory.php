@@ -7,21 +7,25 @@
  */
 
 namespace Samcrosoft\Accesstory\Core;
-use App\Models\Audits\AccessHistory;
+
 use Samcrosoft\Accesstory\Config\Reader;
+use Samcrosoft\Accesstory\Core\Model\AccessStoryModel;
 
 /**
  * Class AccessStory
  * @package Samcrosoft\Accesstory\Core
  */
-class AccessStory {
+class AccessStory
+{
 
     // use access story trait
     use AccessStoryTrait;
 
     /**
+     *
      */
-    public function __construct(){
+    public function __construct()
+    {
         $this->setupSessionManager();
     }
 
@@ -29,15 +33,17 @@ class AccessStory {
     /**
      * This is the start of the story telling
      */
-    public function composeStory(){
+    public function composeStory()
+    {
         // initiate the start time to now
         $this->getSessionManager()->setStartTime();
     }
 
     /**
-     *
+     * This will save the access story to the database
      */
-    public function saveStory(){
+    public function saveStory()
+    {
         // set the end time
         $this->getSessionManager()->setEndTime();
         // calculate the memory usage
@@ -46,33 +52,32 @@ class AccessStory {
         // get the collected data
         $aData = $this->getSessionManager()->getCollectedData();
         $aData = array_merge($aData, [
-            'response_time'    => $this->getSessionManager()->getTimeTaken(),
-            'memory_usage'     => memory_get_usage(true)
+            'response_time' => $this->getSessionManager()->getTimeTaken(),
+            'memory_usage'  => $this->getSessionManager()->getMemoryUsage()
         ]);
 
-        // save the access history nw
-        AccessHistory::create($aData);
+        // save the access history now
+        AccessStoryModel::create($aData);
 
         // remove the session, so that it would always be unique across each request
         \Session::remove(Reader::getSessionKeyName());
-
     }
 
 
     /**
-     * @param \BaseController $oController
+     * @param \Controller $oController
      */
-    public function publishStory(\BaseController $oController){
-
+    public function publishStory(\Controller $oController)
+    {
         $oRequestInstance = \Request::instance();
-        $iLoginID         = $oController->getWebSessionProvider()
-            ->getWebSession()->getLoginHistory()->getLoginHistoryID();
-        $oRouteInstance   = \Route::current();
+        $oRouteInstance = \Route::current();
+
+        // get the extra custom data supplied by the user
+        $aCustomData = $this->getCustomSuppliedData($oController);
 
         $uri = head($oRouteInstance->methods()) . ' ' . $oRouteInstance->uri();
         $aData = [
-            'LoginID'          => $iLoginID,
-            'IPAddress'        => \Input::getClientIp(),
+            'ip_address'       => \Input::getClientIp(),
             'domain'           => \Request::root(),
             'path'             => \Request::path(),
             'request_method'   => $oRequestInstance->getMethod(),
@@ -88,8 +93,28 @@ class AccessStory {
             'class_method'     => \Request::method(),
         ];
 
+        // merge the custom data to the already built data
+        $aData = array_merge($aData, $aCustomData);
+
         // save the collected data
         $this->getSessionManager()->saveCollectedData($aData);
 
+    }
+
+
+    /**
+     * @param \Controller $oController
+     * @return array|mixed
+     */
+    private function getCustomSuppliedData(\Controller $oController)
+    {
+        $aOverLoadedData        = [];
+        $sOverLoadedFunction    = Reader::getCustomDataMethodName();
+        if (method_exists($oController, $sOverLoadedFunction)) {
+            $aOverLoadedData    = call_user_func_array([$oController, $sOverLoadedFunction], []);
+            $aOverLoadedData    = is_array($aOverLoadedData) ? $aOverLoadedData : [];
+        }
+
+        return $aOverLoadedData;
     }
 } 

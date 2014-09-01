@@ -28,6 +28,11 @@ class Reader {
      */
     const CONFIG_KEY_INCLUDE_LARAVEL_BOOT = "include_laravel_boot";
     /**
+     * @static
+     * @var string
+     */
+    const CONFIG_KEY_CUSTOM_CONTROLLER_METHOD_NAME = "custom_controller_method_name";
+    /**
      *
      */
     const STORY_CONFIG_FILENAME = "story";
@@ -62,5 +67,14 @@ class Reader {
      */
     public static function includeLaravelBootTime(){
         return (bool) (self::getPackageConfigItem(self::CONFIG_KEY_SESSION_KEY_NAME));
+    }
+
+    /**
+     * @return string
+     */
+    public static function getCustomDataMethodName(){
+        return strval(self::getPackageConfigItem(
+            self::CONFIG_KEY_CUSTOM_CONTROLLER_METHOD_NAME
+        ));
     }
 } 

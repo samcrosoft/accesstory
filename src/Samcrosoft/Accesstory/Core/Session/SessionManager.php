@@ -79,13 +79,15 @@ class SessionManager {
      * This will set the memory usage for the current request[session]
      */
     public function setMemoryUsage(){
-        $this->fMemoryUsage = memory_get_usage();
+        $this->fMemoryUsage = memory_get_usage(TRUE);
     }
 
     /**
      * @return string
      */
     public function getMemoryUsage(){
+        if(empty($this->fEndTime)) $this->setMemoryUsage();
+
         return $this->fMemoryUsage;
     }
 
