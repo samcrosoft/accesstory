@@ -101,6 +101,24 @@ class AccessStory
 
     }
 
+    /**
+     * This method will fire the Event structure of Laravel to listen to calls to save the access story
+     */
+    public static function listenForInterviews(){
+        // note - the name of the publish story event must be the same as that of the publish method
+        $PublishMethodName = "publishStory";
+        $sPublishClassMethod = __CLASS__."@{$PublishMethodName}";
+        \Event::listen(Reader::getEventName(), $sPublishClassMethod);
+    }
+
+    /**
+     * This will call for an interview from the controller
+     * @param \Controller $oController
+     */
+    public static function callForInterviews(\Controller $oController){
+        \Event::fire(Reader::getEventName(), $oController);
+    }
+
 
     /**
      * @param \Controller $oController

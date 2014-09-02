@@ -21,7 +21,6 @@ return [
     */
 
     'session_key_name'     => 'accesstory_store',
-    //'session_key_name'     => 'Samcrosoft_AccessStory',
 
     /*
     |--------------------------------------------------------------------------
@@ -49,6 +48,15 @@ return [
     | This method should return an array of values to be added to the accesstory table
     |
     */
-    'custom_controller_method_name' => 'accessHistoryExtraData'
+    'custom_controller_method_name' => 'accessHistoryExtraData',
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Name of event to be called
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    'event_fire_name'   => 'samcrosoft.events.accesstory'
 ];
