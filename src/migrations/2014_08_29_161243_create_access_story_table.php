@@ -2,14 +2,9 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Samcrosoft\Accesstory\Config\Reader;
 
 class CreateAccessStoryTable extends Migration {
-
-    /**
-     * @access static
-     * @var string
-     */
-    static $table = "AccessStory";
 
 	/**
 	 * Run the migrations.
@@ -18,8 +13,10 @@ class CreateAccessStoryTable extends Migration {
 	 */
 	public function up()
 	{
-        Schema::dropIfExists(static::$table);
-        Schema::create(static::$table, function(Blueprint $table)
+        $sTable = Reader::getTableName();
+
+        Schema::dropIfExists($sTable);
+        Schema::create($sTable, function(Blueprint $table)
         {
             $table->increments('id');
             $table->string('ip_address', 100)->nullable();
@@ -49,7 +46,8 @@ class CreateAccessStoryTable extends Migration {
 	 */
 	public function down()
 	{
-        Schema::dropIfExists(static::$table);
+        $sTable = Reader::getTableName();
+        Schema::dropIfExists($sTable);
 	}
 
 }

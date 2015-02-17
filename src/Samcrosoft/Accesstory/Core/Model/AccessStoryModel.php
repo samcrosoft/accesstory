@@ -8,6 +8,8 @@
 
 namespace Samcrosoft\Accesstory\Core\Model;
 
+use Samcrosoft\Accesstory\Config\Reader;
+
 
 /**
  * Class AccessStoryModel
@@ -24,5 +26,17 @@ class AccessStoryModel extends \Eloquent {
      * @var string
      */
     protected $table = "AccessStory";
+
+
+	/**
+	 * @param array $attributes
+	 */
+    public function __construct(array $attributes = array())
+    {
+        parent::__construct($attributes); 
+
+        // set the table name
+        $this->table = Reader::getTableName();
+    }
 
 }

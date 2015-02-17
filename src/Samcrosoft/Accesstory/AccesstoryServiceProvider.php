@@ -26,9 +26,12 @@ class AccesstoryServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('samcrosoft/accesstory');
         $loader = AliasLoader::getInstance();
         $loader->alias('AccessStory', 'Samcrosoft\Accesstory\Facade\Facade');
+
+        $this->publishes([
+            __DIR__ . '/../../config/story.php' => config_path('story.php')
+        ]);
 	}
 
 	/**
@@ -42,9 +45,8 @@ class AccesstoryServiceProvider extends ServiceProvider {
         $this->app->bind(Facade::FACADE_NAME, function(){
             return new AccessStory;
         });
-
-
 	}
+
 
 	/**
 	 * Get the services provided by the provider.

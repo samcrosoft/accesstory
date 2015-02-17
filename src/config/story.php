@@ -59,4 +59,13 @@ return [
     |
     */
     'event_fire_name'   => 'samcrosoft.events.accesstory'
+
+    /*
+    |--------------------------------------------------------------------------
+    | Name of the table name for the accesstory
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    'table_name' => 'AccessStory'
 ];

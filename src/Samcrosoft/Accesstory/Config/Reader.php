@@ -49,11 +49,18 @@ class Reader {
     const STORY_CONFIG_FILENAME = "story";
 
     /**
+     * @static
+     * @var string
+     */
+    const CONFIG_KEY_TABLE_NAME = "table_name";
+
+    /**
+     * Configure the config file name to use the laravel5 stucture
      * @param $sKey
      * @return string
      */
     public static function remapConfigName($sKey){
-        return Facade::FACADE_NAME."::".self::STORY_CONFIG_FILENAME .".".$sKey;
+        return self::STORY_CONFIG_FILENAME .".".$sKey;
     }
 
     /**
@@ -102,6 +109,17 @@ class Reader {
     public static function getEventName(){
         return strval(self::getPackageConfigItem(
             self::CONFIG_KEY_EVENT_FIRE_NAME, self::DEFAULT_EVENT_FIRE_NAME
+        ));
+    }
+
+    /**
+     * This will return the table name from the configuration file
+     * @return string
+     */
+    public static function getTableName()
+    {
+        return strval(self::getPackageConfigItem(
+            self::CONFIG_KEY_TABLE_NAME
         ));
     }
 } 
