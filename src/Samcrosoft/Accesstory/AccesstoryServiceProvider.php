@@ -19,6 +19,7 @@ class AccesstoryServiceProvider extends ServiceProvider {
 	 */
 	protected $defer = false;
 
+
 	/**
 	 * Bootstrap the application events.
 	 *
@@ -42,6 +43,10 @@ class AccesstoryServiceProvider extends ServiceProvider {
 	public function register()
 	{
 		//
+        $this->mergeConfigFrom(
+            __DIR__ . '/../../config/story.php', 'story'
+        );
+
         $this->app->bind(Facade::FACADE_NAME, function(){
             return new AccessStory;
         });

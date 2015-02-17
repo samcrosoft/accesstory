@@ -25,7 +25,7 @@ class AccessStoryModel extends \Eloquent {
     /**
      * @var string
      */
-    protected $table = "AccessStory";
+    protected $table;
 
 
 	/**

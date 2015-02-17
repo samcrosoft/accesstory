@@ -58,7 +58,7 @@ return [
     |
     |
     */
-    'event_fire_name'   => 'samcrosoft.events.accesstory'
+    'event_fire_name'   => 'samcrosoft.events.accesstory',
 
     /*
     |--------------------------------------------------------------------------

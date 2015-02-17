@@ -55,7 +55,7 @@ class Reader {
     const CONFIG_KEY_TABLE_NAME = "table_name";
 
     /**
-     * Configure the config file name to use the laravel5 stucture
+     * Configure the config file name to use the laravel5 structure
      * @param $sKey
      * @return string
      */

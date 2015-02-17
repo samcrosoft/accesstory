@@ -56,6 +56,7 @@ class AccessStory
             'memory_usage'  => $this->getSessionManager()->getMemoryUsage()
         ]);
 
+
         // save the access history now
         AccessStoryModel::create($aData);
 
@@ -63,17 +64,17 @@ class AccessStory
         \Session::remove(Reader::getSessionKeyName());
     }
 
-
     /**
-     * @param \Controller $oController
+     * This will publish the story to the database
      */
-    public function publishStory(\Controller $oController)
+    public function publishStory()
     {
         $oRequestInstance = \Request::instance();
         $oRouteInstance = \Route::current();
 
+
         // get the extra custom data supplied by the user
-        $aCustomData = $this->getCustomSuppliedData($oController);
+        $aCustomData = $this->getCustomSuppliedData();
 
         $uri = head($oRouteInstance->methods()) . ' ' . $oRouteInstance->uri();
         $aData = [
@@ -89,7 +90,6 @@ class AccessStory
             'route_name'       => $oRouteInstance->getName() ?: '-',
             'route_action'     => $oRouteInstance->getActionName() ?: '-',
 
-            'class_controller' => get_class($oController),
             'class_method'     => \Request::method(),
         ];
 
@@ -107,31 +107,47 @@ class AccessStory
     public static function listenForInterviews(){
         // note - the name of the publish story event must be the same as that of the publish method
         $PublishMethodName = "publishStory";
-        $sPublishClassMethod = __CLASS__."@{$PublishMethodName}";
-        \Event::listen(Reader::getEventName(), $sPublishClassMethod);
+        //$sPublishClassMethod = __CLASS__."@{$PublishMethodName}";
+        \Event::listen(Reader::getEventName(), function() use ($PublishMethodName){
+            call_user_func([new static, $PublishMethodName]);
+        });
     }
 
     /**
      * This will call for an interview from the controller
-     * @param \Controller $oController
      */
-    public static function callForInterviews(\Controller $oController){
-        \Event::fire(Reader::getEventName(), $oController);
+    public static function callForInterviews(){
+        \Event::fire(Reader::getEventName());
     }
 
 
     /**
-     * @param \Controller $oController
+     * This should be set on the controller class
      * @return array|mixed
      */
-    private function getCustomSuppliedData(\Controller $oController)
+    private function getCustomSuppliedData()
     {
         $aOverLoadedData        = [];
         $sOverLoadedFunction    = Reader::getCustomDataMethodName();
-        if (method_exists($oController, $sOverLoadedFunction)) {
-            $aOverLoadedData    = call_user_func_array([$oController, $sOverLoadedFunction], []);
-            $aOverLoadedData    = is_array($aOverLoadedData) ? $aOverLoadedData : [];
+
+        $oRouteInstance = \Route::current();
+        $action = $oRouteInstance->getAction();
+        $sController = null;
+        $sMethod = null;
+
+        if (isset($action['controller']) && strpos($action['controller'], '@') !== false) {
+            list($sController, $sMethod) = explode('@', $action['controller']);
+            if (class_exists($sController)) {
+                $oReflector = new \ReflectionClass($sController);
+                if($oReflector->hasMethod($sOverLoadedFunction)){
+                //if($oReflector->hasMethod($sOverLoadedFunction) && $oReflector->isSubclassOf(Controller::class)){
+                    $aOverLoadedData = call_user_func([$sController, "accessHistoryExtraData"]);
+                    $aOverLoadedData    = is_array($aOverLoadedData) ? $aOverLoadedData : [];
+                }
+            }
         }
+
+        $aOverLoadedData['class_controller'] = $sController;
 
         return $aOverLoadedData;
     }

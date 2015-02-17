@@ -33,7 +33,6 @@ Trait AccessStoryTrait {
         else{
             $this->setSessionManager(new SessionManager());
         }
-
     }
 
     /**
@@ -52,6 +51,5 @@ Trait AccessStoryTrait {
         $this->oSessionManager = $oSessionManager;
         // save it to the session here
         \Session::flash(Reader::getSessionKeyName(), $oSessionManager);
-
     }
 } 
